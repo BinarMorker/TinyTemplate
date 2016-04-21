@@ -1,5 +1,7 @@
 <?php
 
+namespace TinyTemplate;
+
 class Template {
     private $template = "";
     private $content = null;
