@@ -2,9 +2,11 @@
 require_once "../Engine.php";
 require_once "../Rule.php";
 require_once "../Template.php";
+require_once "../Layout.php";
 use TinyTemplate\Engine;
 use TinyTemplate\Rule;
 use TinyTemplate\Template;
+use TinyTemplate\Layout;
 
 class Application {
     public static function run() {
@@ -36,7 +38,9 @@ class Application {
             )
         ));
         echo Engine::instance()->process(
-            new Template("test.htm"));
+            new Template("test.htm"),
+            new Layout("layout.htm")
+        );
         echo "Generated in " . (microtime(true) - $time) . " milliseconds.";
     }
     

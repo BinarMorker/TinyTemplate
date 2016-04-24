@@ -1,100 +1,73 @@
-<html>
-    <head>
-        <title>TinyTemplate Test</title>
-        <style>
-            h1 {
-                font-size: 40px;
-                line-height: 40px;
-            }
-            h2 {
-                display: inline-block;
-                font-size: 20px;
-                line-height: 20px;
-                margin: 0;
-            }
-            div {
-                margin-bottom: 20px;
-            }
-            code {
-                display: block;
-            }
-        </style>
-    </head>
-    <body>
-        <div>
-            <h1>TinyTemplate Tests</h1>
-            <div>
-                <h2>Variable</h2>
-                <span>{working}</span>
-                <code>
-                    &#123;variable}
-                </code>
-            </div>
-            <div>
-                <h2>If</h2>
-                {if:varif}
-                <span>{working}</span>
-                {endif}
-                <code>
-                    &#123;if:variable}&#123;endif}
-                </code>
-            </div>
-            <div>
-                <h2>Ifnot</h2>
-                {ifnot:varnot}
-                <span>{working}</span>
-                {endif}
-                <code>
-                    &#123;ifnot:variable}&#123;endif}
-                </code>
-            </div>
-            <div>
-                <h2>Else</h2>
-                {if:varnot}
-                {else}
-                <span>{working}</span>
-                {endif}
-                <code>
-                    &#123;if:variable}&#123;else}&#123;endif}
-                </code>
-            </div>
-            <div>
-                <h2>Elseif</h2>
-                {if:varnot}
-                {else:varif}
-                <span>{working}</span>
-                {endif}
-                <code>
-                    &#123;if:variable}&#123;else:variable}&#123;endif}
-                </code>
-            </div>
-            <div>
-                <h2>Loop</h2>
-                {loop:varlist}
-                <span>{item}</span>
-                {endloop}
-                <code>
-                    &#123;loop:list}&#123;variable}&#123;endloop}
-                </code>
-            </div>
-            <div>
-                <h2>PHP code</h2>
-                <?php echo "This should never be shown"; ?>
-                <code>
-                    The code should display as a comment block
-                </code>
-            </div>
-            <div>
-                <h2>Import</h2>
-                {import:test2.htm}
-            </div>
-            <div>
-                <h2>Custom rule</h2>
-                {translate:generic,hello_world}
-                <code>
-                    &#123;translate:generic,hello_world}
-                </code>
-            </div>
-        </div>
-    </body>
-</html>
+<h1>TinyTemplate Tests</h1>
+<div>
+    <h2>Variable</h2>
+    <span>{working}</span>
+    <code>
+        &#123;variable}
+    </code>
+</div>
+<div>
+    <h2>If</h2>
+    {if:varif}
+    <span>{working}</span>
+    {endif}
+    <code>
+        &#123;if:variable}&#123;endif}
+    </code>
+</div>
+<div>
+    <h2>Ifnot</h2>
+    {ifnot:varnot}
+    <span>{working}</span>
+    {endif}
+    <code>
+        &#123;ifnot:variable}&#123;endif}
+    </code>
+</div>
+<div>
+    <h2>Else</h2>
+    {if:varnot}
+    {else}
+    <span>{working}</span>
+    {endif}
+    <code>
+        &#123;if:variable}&#123;else}&#123;endif}
+    </code>
+</div>
+<div>
+    <h2>Elseif</h2>
+    {if:varnot}
+    {else:varif}
+    <span>{working}</span>
+    {endif}
+    <code>
+        &#123;if:variable}&#123;else:variable}&#123;endif}
+    </code>
+</div>
+<div>
+    <h2>Loop</h2>
+    {loop:varlist}
+    <span>{item}</span>
+    {endloop}
+    <code>
+        &#123;loop:list}&#123;variable}&#123;endloop}
+    </code>
+</div>
+<div>
+    <h2>PHP code</h2>
+    <?php echo "This should never be shown"; ?>
+    <code>
+        The code should display as a comment block
+    </code>
+</div>
+<div>
+    <h2>Import</h2>
+    {import:test2.htm}
+</div>
+<div>
+    <h2>Custom rule</h2>
+    {translate:generic,hello_world}
+    <code>
+        &#123;translate:generic,hello_world}
+    </code>
+</div>

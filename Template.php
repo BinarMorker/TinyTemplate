@@ -98,10 +98,23 @@ class Template {
      */
     public function process($rules, $data) {
         $this->rules = $rules;
+        
+        // Variables
+        $this->rules[] = new Rule(
+            'escape_var', 
+            '~\{escape:(\w+)\}~', 
+            '<?php $this->showVariable(\'$1\', true); ?>'
+        );
+        $this->rules[] = new Rule(
+            'variable', 
+            '~\{(\w+)\}~', 
+            '<?php $this->showVariable(\'$1\'); ?>'
+        );
+        
         $this->data = $data;
         $this->stack = array();
         
-        foreach ($rules as $rule) {
+        foreach ($this->rules as $rule) {
             $this->template = preg_replace($rule->rule(), $rule->replacement(), $this->template);
         }
         
