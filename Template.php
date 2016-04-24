@@ -1,30 +1,65 @@
 <?php
+/**
+ * @author François Allard <binarmorker@gmail.com>
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ */
 
 namespace TinyTemplate;
 
+/**
+ * A Template is a view that can be processed through the Engine.
+ */
 class Template {
+    
+    /**
+     * @var string The Template's contents.
+     */
     private $template = "";
-    private $content = null;
-    private $data = array();
+    
+    /**
+     * @var array[object|array] The loop stack.
+     */
     private $stack = array();
     
-    public function __construct($file, $layout = null) {
-        if (!is_null($layout)) {
-            $this->template = @file_get_contents($layout, true);
-            $this->content = new Template($file);
-        } else {
-            $this->template = @file_get_contents($file, true);
-        }
+    /**
+     * @var array[mixed] The data to be passed to the Template.
+     */
+    private $data = array();
+    
+    /**
+     * @var array[Rule] The rules to be applied to the Template.
+     */
+    private $rules = array();
+    
+    /**
+     * Creates the Template from a filename.
+     * @param $file string The filename and path of the Template.
+     * @throws InvalidArgumentException If the file cannot be found.
+     */
+    public function __construct($file) {
+        $this->template = @file_get_contents($file, true);
         
         if (!$this->template) {
-            throw new InvalidArgumentException('File not found');
+            throw new \InvalidArgumentException('File not found');
         }
     }
     
+    /**
+     * Imports a file in the form of a new Template.
+     * @var $file string The filename of the imported Template.
+     * @returns string
+     */
     private function importFile($file) {
-        return @file_get_contents($file, true);
+        $template = new Template($file);
+        return $template->process($this->rules, $this->data);
     }
     
+    /**
+     * Shows the content of a variable stored in the data.
+     * @var $name string The variable name in the data array.
+     * @var $sanitize boolean If the variable should be escaped before being returned.
+     * @returns mixed
+     */
     private function showVariable($name, $sanitize = false) {
         if (isset($this->data[$name])) {
             if ($sanitize) {
@@ -37,6 +72,10 @@ class Template {
         }
     }
     
+    /**
+     * Wraps the content of the loop into the data array so it can be used
+     * @var $element object|array The element that will be looped into.
+     */
     private function wrap($element) {
         $this->stack[] = $this->data;
         foreach ($element as $k => $v) {
@@ -44,34 +83,31 @@ class Template {
         }
     }
     
+    /**
+     * Removes the loop variables from inside the data so we cannot use it afterwards.
+     */
     private function unwrap() {
         $this->data = array_pop($this->stack);
     }
     
-    private function run() {
-        ob_start();
-        eval(func_get_arg(0));
-        return ob_get_clean();
-    }
-    
-    public function process($data = array()) {
+    /**
+     * Process the Template and convert its variables into values.
+     * @var $rules array[Rule] The rules to be applied to the Template.
+     * @var $data array The data to be passed to the Template.
+     * @returns string
+     */
+    public function process($rules, $data) {
+        $this->rules = $rules;
         $this->data = $data;
         $this->stack = array();
-        $this->template = preg_replace('~(<\?)~', '<?php echo \'<?\'; ?>', $this->template);
-        $this->template = preg_replace('~\{yield\}~', '<?php echo $this->content->process($this->data); ?>', $this->template);
-        $this->template = preg_replace('~\{if:(\w+)\}~', '<?php if ($this->data[\'$1\']): ?>', $this->template);
-        $this->template = preg_replace('~\{if:(\w+)([!<>=]+)(\w+)\}~', '<?php if ($this->data[\'$1\']$2$this->data[\'$3\']): ?>', $this->template);
-        $this->template = preg_replace('~\{ifnot:(\w+)\}~', '<?php if (!$this->data[\'$1\']): ?>', $this->template);
-        $this->template = preg_replace('~\{else\}~', '<?php else: ?>', $this->template);
-        $this->template = preg_replace('~\{else:(\w+)\}~', '<?php elseif ($this->data[\'$1\']): ?>', $this->template);
-        $this->template = preg_replace('~\{else:(\w+)([!<>=]+)(\w+)\}~', '<?php elseif ($this->data[\'$1\']$2$this->data[\'$3\']): ?>', $this->template);
-        $this->template = preg_replace('~\{endif\}~', '<?php endif; ?>', $this->template);
-        $this->template = preg_replace('~\{loop:(\w+)\}~', '<?php foreach ($this->data[\'$1\'] as $element): $this->wrap($element); ?>', $this->template);
-        $this->template = preg_replace('~\{endloop\}~', '<?php $this->unwrap(); endforeach; ?>', $this->template);
-        $this->template = preg_replace('~\{(\w+)\}~', '<?php $this->showVariable(\'$1\'); ?>', $this->template);
-        $this->template = preg_replace('~\{import:(\w+)\}~', '<?php echo $this->importFile($this->data[\'$1\']); ?>', $this->template);
-        $this->template = preg_replace('~\{escape:(\w+)\}~', '<?php $this->showVariable(\'$1\', true); ?>', $this->template);
+        
+        foreach ($rules as $rule) {
+            $this->template = preg_replace($rule->rule(), $rule->replacement(), $this->template);
+        }
+        
         $this->template = '?>' . $this->template;
-        return $this->run($this->template);
+        ob_start();
+        eval($this->template);
+        return ob_get_clean();
     }
 }

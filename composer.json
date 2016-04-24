@@ -1,8 +1,27 @@
 {
     "name": "binarmorker/tinytemplate",
+    "description": "A tiny templating engine written in PHP.",
+    "type": "library",
+    "license": "GPL-3.0+",
+    "authors": [
+        {
+            "name": "François Allard",
+            "email": "binarmorker@gmail.com",
+            "homepage": "http://kitaiweb.ca",
+            "role": "Developer"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "TinyTemplate\\": ""
-        }
+        },
+        "psr-0": {
+            "TinyTemplate\\": ""
+        },
+        "classmap": [
+            "Engine.php",
+            "Rule.php",
+            "Template.php"
+        ]
     }
 }
