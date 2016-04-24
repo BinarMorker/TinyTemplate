@@ -21,7 +21,8 @@
         "classmap": [
             "Engine.php",
             "Rule.php",
-            "Template.php"
+            "Template.php",
+            "Layout.php"
         ]
     }
 }
