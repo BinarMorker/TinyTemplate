@@ -38,8 +38,7 @@ class Application {
             )
         ));
         echo Engine::instance()->process(
-            new Template("test.htm"),
-            new Layout("layout.htm")
+            new Template("test.htm")
         );
         echo "Generated in " . (microtime(true) - $time) . " milliseconds.";
     }

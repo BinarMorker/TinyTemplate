@@ -1,7 +1,9 @@
+<!DOCTYPE html>
 <html>
-    <head>
-        <title>TinyTemplate Test</title>
-        <style>
+	<head>
+		<meta charset="UTF-8">
+		<title>Layout Test</title>
+		<style>
             h1 {
                 font-size: 40px;
                 line-height: 40px;
@@ -19,10 +21,18 @@
                 display: block;
             }
         </style>
-    </head>
-    <body>
-        <div>
-            {content}
-        </div>
-    </body>
+	</head>
+	<body>
+		<div>
+			<h1>TinyTemplate Tests</h1>
+			<hr>
+		</div>
+		<div>
+			<h2>Layouts</h2>
+			{yield}
+		</div>
+		<div>
+			<hr>
+		</div>
+	</body>
 </html>

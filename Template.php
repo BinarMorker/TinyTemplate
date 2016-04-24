@@ -32,8 +32,14 @@ class Template {
     private $rules = array();
     
     /**
+     * @var Layout The layout for the template
+     */
+    private $layout;
+    
+    /**
      * Creates the Template from a filename.
      * @param $file string The filename and path of the Template.
+     * @param $layout string The filename and path of the Layout.
      * @throws InvalidArgumentException If the file cannot be found.
      */
     public function __construct($file) {
@@ -96,7 +102,7 @@ class Template {
      * @var $data array The data to be passed to the Template.
      * @returns string
      */
-    public function process($rules, $data) {
+    public function process(array $rules, array $data) {
         $this->rules = $rules;
         
         // Variables
@@ -119,6 +125,7 @@ class Template {
         }
         
         $this->template = '?>' . $this->template;
+        
         ob_start();
         eval($this->template);
         return ob_get_clean();
