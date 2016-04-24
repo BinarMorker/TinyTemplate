@@ -129,8 +129,12 @@ class Engine {
      * @param $rule Rule The new rule to add.
      * @return void
      */
-    public function add_rule($rule) {
-        $this->rules[] = $rule;
+    public function add_rule(Rule $rule) {
+        //$this->rules[] = $rule;
+        
+    	/* Attempt to fix execution of the variable rule before custom rules */
+    	$array[] = $rule;
+    	$this->rules = $array + $this->rules;
     }
     
     /**
@@ -138,7 +142,7 @@ class Engine {
      * @param $data array The data array to add.
      * @return void
      */
-    public function add_data($data) {
+    public function add_data(array $data) {
         $this->data += $data;
     }
     
@@ -147,8 +151,14 @@ class Engine {
      * @param $template Template The template instance.
      * @return string
      */
-    public function process($template) {
-        return $template->process($this->rules, $this->data);
+    public function process(Template $template, Layout $layout = null) {
+        $content = $template->process($this->rules, $this->data);
+        if (!is_null($layout)) {
+        	$this->data[] = $content;
+        	$content = $layout->process($this->rules, $this->data);
+        }
+        
+        return $content;
     }
     
 }

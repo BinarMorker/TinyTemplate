@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Layout Test</title>
+		<style>
+            h1 {
+                font-size: 40px;
+                line-height: 40px;
+            }
+            h2 {
+                display: inline-block;
+                font-size: 20px;
+                line-height: 20px;
+                margin: 0;
+            }
+            div {
+                margin-bottom: 20px;
+            }
+            code {
+                display: block;
+            }
+        </style>
+	</head>
+	<body>
+		<div>
+			<h1>TinyTemplate Tests</h1>
+			<hr>
+		</div>
+		<div>
+			<h2>Layouts</h2>
+			{yield}
+		</div>
+		<div>
+			<hr>
+		</div>
+	</body>
+</html>
