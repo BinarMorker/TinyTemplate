@@ -134,7 +134,7 @@ class Engine {
         
     	/* Attempt to fix execution of the variable rule before custom rules */
     	$array[] = $rule;
-    	$this->rules = $array + $this->rules;
+    	$this->rules = array_merge($array, $this->rules);
     }
     
     /**
@@ -143,7 +143,7 @@ class Engine {
      * @return void
      */
     public function add_data(array $data) {
-        $this->data += $data;
+        $this->data = array_merge($this->data, $data);
     }
     
     /**

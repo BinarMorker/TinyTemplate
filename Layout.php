@@ -15,7 +15,7 @@ class Layout extends Template {
 				'<?php $end = end($this->data); echo $end; ?>'
 		);
 		
-		$arr_rules = $array + $rules;
+		$arr_rules = array_merge($array, $rules);
 		
 		return parent::process($arr_rules, $data);
 	}
