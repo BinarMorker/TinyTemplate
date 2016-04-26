@@ -45,7 +45,7 @@ class Template {
     public function __construct($file) {
         $this->template = @file_get_contents($file, true);
         
-        if (!$this->template) {
+        if ($this->template === false) {
             throw new \InvalidArgumentException('File not found');
         }
     }
