@@ -30,69 +30,7 @@ class Engine {
      * Protected constructor to prevent creating a new instance of the class.
      */
     protected function __construct() {
-        // PHP code exclusion
-        // TODO: Add exclusions for CDATA, dhtml and other dynamic server-side scripting.
-        $this->rules[] = new Rule(
-            'php_exclude', 
-            '~(<\?)~', 
-            '<?php echo \'<?\'; ?>'
-        );
         
-        // If conditionning
-        $this->rules[] = new Rule(
-            'if_boolean', 
-            '~\{if:(\w+)\}~', 
-            '<?php if ($this->data[\'$1\']): ?>'
-        );
-        $this->rules[] = new Rule(
-            'if_condition', 
-            '~\{if:(\w+)([!<>=]+)(\w+)\}~', 
-            '<?php if ($this->data[\'$1\']$2$this->data[\'$3\']): ?>'
-        );
-        $this->rules[] = new Rule(
-            'ifnot', 
-            '~\{ifnot:(\w+)\}~', 
-            '<?php if (!$this->data[\'$1\']): ?>'
-        );
-        $this->rules[] = new Rule(
-            'else', 
-            '~\{else\}~', 
-            '<?php else: ?>'
-        );
-        $this->rules[] = new Rule(
-            'elseif_boolean', 
-            '~\{else:(\w+)\}~', 
-            '<?php elseif ($this->data[\'$1\']): ?>'
-        );
-        $this->rules[] = new Rule(
-            'elseif_condition', 
-            '~\{else:(\w+)([!<>=]+)(\w+)\}~', 
-            '<?php elseif ($this->data[\'$1\']$2$this->data[\'$3\']): ?>'
-        );
-        $this->rules[] = new Rule(
-            'endif', 
-            '~\{endif\}~', 
-            '<?php endif; ?>'
-        );
-        
-        // Loops
-        $this->rules[] = new Rule(
-            'loop', 
-            '~\{loop:(\w+)\}~', 
-            '<?php foreach ($this->data[\'$1\'] as $element): $this->wrap($element); ?>'
-        );
-        $this->rules[] = new Rule(
-            'endloop', 
-            '~\{endloop\}~', 
-            '<?php $this->unwrap(); endforeach; ?>'
-        );
-        
-        // Importing
-        $this->rules[] = new Rule(
-            'import_view', 
-            '~\{import:([.\w]+)\}~', 
-            '<?php echo $this->importFile(\'$1\'); ?>'
-        );
     }
     
     /**
@@ -129,11 +67,7 @@ class Engine {
      * @return void
      */
     public function add_rule(Rule $rule) {
-        //$this->rules[] = $rule;
-        
-    	/* Attempt to fix execution of the variable rule before custom rules */
-    	$array[] = $rule;
-    	$this->rules = array_merge($array, $this->rules);
+        $this->rules[] = $rule;
     }
     
     /**
@@ -152,6 +86,7 @@ class Engine {
      */
     public function process(Template $template, Layout $layout = null) {
         $content = $template->process($this->rules, $this->data);
+        
         if (!is_null($layout)) {
         	$this->data[] = $content;
         	$content = $layout->process($this->rules, $this->data);

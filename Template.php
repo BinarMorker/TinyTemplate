@@ -103,14 +103,81 @@ class Template {
      * @returns string
      */
     public function process(array $rules, array $data) {
-        $this->rules = $rules;
+        // PHP code exclusion
+        // TODO: Add exclusions for CDATA, dhtml and other dynamic server-side scripting.
+        $this->rules[] = new Rule(
+            'php_exclude', 
+            '~(<\?)~', 
+            '<?php echo \'<?\'; ?>'
+        );
         
-        // Variables
+        // If conditionning
+        $this->rules[] = new Rule(
+            'if_boolean', 
+            '~\{if:(\w+)\}~', 
+            '<?php if ($this->data[\'$1\']): ?>'
+        );
+        $this->rules[] = new Rule(
+            'if_condition', 
+            '~\{if:(\w+)([!<>=]+)(\w+)\}~', 
+            '<?php if ($this->data[\'$1\']$2$this->data[\'$3\']): ?>'
+        );
+        $this->rules[] = new Rule(
+            'ifnot', 
+            '~\{ifnot:(\w+)\}~', 
+            '<?php if (!$this->data[\'$1\']): ?>'
+        );
+        $this->rules[] = new Rule(
+            'else', 
+            '~\{else\}~', 
+            '<?php else: ?>'
+        );
+        $this->rules[] = new Rule(
+            'elseif_boolean', 
+            '~\{else:(\w+)\}~', 
+            '<?php elseif ($this->data[\'$1\']): ?>'
+        );
+        $this->rules[] = new Rule(
+            'elseif_condition', 
+            '~\{else:(\w+)([!<>=]+)(\w+)\}~', 
+            '<?php elseif ($this->data[\'$1\']$2$this->data[\'$3\']): ?>'
+        );
+        $this->rules[] = new Rule(
+            'endif', 
+            '~\{endif\}~', 
+            '<?php endif; ?>'
+        );
+        
+        // Loops
+        $this->rules[] = new Rule(
+            'loop', 
+            '~\{loop:(\w+)\}~', 
+            '<?php foreach ($this->data[\'$1\'] as $element): $this->wrap($element); ?>'
+        );
+        $this->rules[] = new Rule(
+            'endloop', 
+            '~\{endloop\}~', 
+            '<?php $this->unwrap(); endforeach; ?>'
+        );
+        
+        // Importing
+        $this->rules[] = new Rule(
+            'import_view', 
+            '~\{import:([.\w]+)\}~', 
+            '<?php echo $this->importFile(\'$1\'); ?>'
+        );
+        
+        // Clean variables
         $this->rules[] = new Rule(
             'escape_var', 
             '~\{escape:(\w+)\}~', 
             '<?php $this->showVariable(\'$1\', true); ?>'
         );
+        
+        // Custom rules
+        $this->rules = array_merge($this->rules, $rules);
+        
+        // Variables
         $this->rules[] = new Rule(
             'variable', 
             '~\{(\w+)\}~', 

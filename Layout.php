@@ -8,16 +8,14 @@ namespace TinyTemplate;
 
 class Layout extends Template {
 	
-	public function process (array $rules, array $data) {
-		$array[] = new Rule(
+	public function process(array $custom_rules, array $data) {
+		$custom_rules[] = new Rule(
 				'yield',
 				'~\{yield\}~',
 				'<?php $end = end($this->data); echo $end; ?>'
 		);
 		
-		$arr_rules = array_merge($array, $rules);
-		
-		return parent::process($arr_rules, $data);
+		return parent::process($custom_rules, $data);
 	}
 	
 }
