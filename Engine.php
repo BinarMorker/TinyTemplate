@@ -88,7 +88,6 @@ class Engine {
         );
         
         // Importing
-        // TODO: Allow content yielding for layout support
         $this->rules[] = new Rule(
             'import_view', 
             '~\{import:([.\w]+)\}~', 
