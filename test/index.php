@@ -8,6 +8,7 @@ use TinyTemplate\Rule;
 use TinyTemplate\Template;
 use TinyTemplate\Layout;
 
+ini_set('display_errors', 1);
 class Application {
     public static function run() {
         $time = microtime(true);
@@ -17,8 +18,10 @@ class Application {
                 '<?php \\Application::translate(\'$1\', \'$2\'); ?>'));
         Engine::instance()->add_data(array(
             "working" => "&#10003;",
+            "working_array" => array("check" => "&#10003;"), 
             "varif" => true,
             "varnot" => false,
+            "varcondition" => 4,
             "varlist" => array(
                 array(
                     "item" => 1

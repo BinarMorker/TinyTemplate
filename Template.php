@@ -66,7 +66,7 @@ class Template {
      * @var $sanitize boolean If the variable should be escaped before being returned.
      * @returns mixed
      */
-    private function showVariable($name, $sanitize = false) {
+	private function showVariable($name, $sanitize = false) {
         if (isset($this->data[$name])) {
             if ($sanitize) {
                 echo htmlentities($this->data[$name]);
@@ -118,9 +118,11 @@ class Template {
             '<?php if ($this->data[\'$1\']): ?>'
         );
         $this->rules[] = new Rule(
-            'if_condition', 
-            '~\{if:(\w+)([!<>=]+)(\w+)\}~', 
-            '<?php if ($this->data[\'$1\']$2$this->data[\'$3\']): ?>'
+        		'if_condition',
+        		'~\{if:(\w+)([!<>=]+)(\w+)\}~',
+        		'<?php if (isset($this->data[\'$1\'])) {$base = $this->data[\'$1\'];}else{$base = \'$1\';};
+        		if (isset($this->data[\'$3\'])) {$value = $this->data[\'$3\'];}else{$value = \'$3\';}?>
+        		<?php if ($base $2 $value) : ?>'
         );
         $this->rules[] = new Rule(
             'ifnot', 
@@ -140,7 +142,10 @@ class Template {
         $this->rules[] = new Rule(
             'elseif_condition', 
             '~\{else:(\w+)([!<>=]+)(\w+)\}~', 
-            '<?php elseif ($this->data[\'$1\']$2$this->data[\'$3\']): ?>'
+            '<?php elseif (((isset($this->data[\'$1\']) && isset($this->data[\'$3\'])) && $this->data[\'$1\'] $2 $this->data[\'$3\']) ||
+        		((isset($this->data[\'$1\']) && !isset($this->data[\'$3\'])) && $this->data[\'$1\'] $2 \'$3\') ||
+        		((!isset($this->data[\'$1\']) && isset($this->data[\'$3\'])) && \'$1\' $2 $this->data[\'$3\']) ||
+        		((!isset($this->data[\'$1\']) && !isset($this->data[\'$3\'])) && \'$1\' $2 \'$3\')): ?>'
         );
         $this->rules[] = new Rule(
             'endif', 
@@ -163,7 +168,7 @@ class Template {
         // Importing
         $this->rules[] = new Rule(
             'import_view', 
-            '~\{import:([.\w]+)\}~', 
+            '~\{import:(([^\/\s]+\/)?(.*))\}~', 
             '<?php echo $this->importFile(\'$1\'); ?>'
         );
         
@@ -182,6 +187,19 @@ class Template {
             'variable', 
             '~\{(\w+)\}~', 
             '<?php $this->showVariable(\'$1\'); ?>'
+        );
+        
+        // Arrays
+        $this->rules[] = new Rule(
+        		'variable_array',
+        		'~\{(\w+)\[(\w+)\]\}~',
+        		'<?php echo (isset($this->data[\'$1\'][\'$2\'])) ? $this->data[\'$1\'][\'$2\'] : "{$1[$2]}"; ?>'
+        );
+        
+        $this->rules[] = new Rule(
+        		'variable_array_escape',
+        		'~\{escape:(\w+)\[(\w+)\]\}~',
+        		'<?php echo htmlentities($this->showVariable(\'$1\')[\'$2\']); ?>'
         );
         
         $this->data = $data;
