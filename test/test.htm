@@ -52,17 +52,57 @@
     </code>
 </div>
 <div>
-	<h2>If Condition</h2>
+	<h2>If Condition (Greater)</h2>
 	{if:varcondition>3}
-	<span style="float:left">{working}<br>{working}<br>{working}<br>{working}<br>{working}<br>{working}</span>
+	<span>{working}</span>
     {endif}
     <code>
         &#123;if:variable>value)&#123;endif}<br>
+    </code>
+</div>
+<div>
+	<h2>If Condition (Lesser)</h2>
+	{if:varcondition<5}
+	<span>{working}</span>
+    {endif}
+    <code>
         &#123;if:variable&lt;value)&#123;endif}<br>
+    </code>
+</div>
+<div>
+	<h2>If Condition (Greater Or Equal)</h2>
+	{if:varcondition>=4}
+	<span>{working}</span>
+    {endif}
+    <code>
         &#123;if:variable>=value)&#123;endif}<br>
+    </code>
+</div>
+<div>
+	<h2>If Condition (Lesser Or Equal)</h2>
+	{if:varcondition<=4}
+	<span>{working}</span>
+    {endif}
+    <code>
         &#123;if:variable&lt;=value)&#123;endif}<br>
+    </code>
+</div>
+<div>
+	<h2>If Condition (Equal)</h2>
+	{if:varcondition==4}
+	<span>{working}</span>
+    {endif}
+    <code>
         &#123;if:variable==value)&#123;endif}<br>
-        &#123;if:variable!=value)&#123;endif}
+    </code>
+</div>
+<div>
+	<h2>If Condition (Not Equal)</h2>
+	{if:varcondition!=5}
+	<span>{working}</span>
+    {endif}
+    <code>
+        &#123;if:variable!=value)&#123;endif}<br>
     </code>
 </div>
 <div>
