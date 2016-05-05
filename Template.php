@@ -115,7 +115,7 @@ class Template {
         $this->rules[] = new Rule(
             'if_boolean', 
             '~\{if:(\w+)\}~', 
-            '<?php if ($this->data[\'$1\']): ?>'
+            '<?php if (isset($this->data[\'$1\']) && $this->data[\'$1\']): ?>'
         );
         $this->rules[] = new Rule(
         		'if_condition',
@@ -137,7 +137,7 @@ class Template {
         $this->rules[] = new Rule(
             'elseif_boolean', 
             '~\{else:(\w+)\}~', 
-            '<?php elseif ($this->data[\'$1\']): ?>'
+            '<?php elseif (isset($this->data[\'$1\']) && $this->data[\'$1\']): ?>'
         );
         $this->rules[] = new Rule(
             'elseif_condition', 
