@@ -36,6 +36,8 @@ class Template {
      */
     private $layout;
     
+    private $include_path;
+    
     /**
      * Creates the Template from a filename.
      * @param $file string The filename and path of the Template.
@@ -45,9 +47,17 @@ class Template {
     public function __construct($file) {
         $this->template = @file_get_contents($file, true);
         
+        // PHP code exclusion
+        // TODO: Add exclusions for CDATA, dhtml and other dynamic server-side scripting.
+        $this->template = preg_replace('~<\?(.*?(\?>|$))~s', '', $this->template);
+        
         if ($this->template === false) {
             throw new \InvalidArgumentException('File not found');
         }
+    }
+    
+    public function set_include_path($path){
+    	$this->include_path = $path;
     }
     
     /**
@@ -56,7 +66,7 @@ class Template {
      * @returns string
      */
     private function importFile($file) {
-        $template = new Template($file);
+        $template = new Template($this->include_path . $file);
         return $template->process($this->rules, $this->data);
     }
     
@@ -103,13 +113,6 @@ class Template {
      * @returns string
      */
     public function process(array $rules, array $data) {
-        // PHP code exclusion
-        // TODO: Add exclusions for CDATA, dhtml and other dynamic server-side scripting.
-        $this->rules[] = new Rule(
-            'php_exclude', 
-            '~(<\?)~', 
-            '<?php echo \'<?\'; ?>'
-        );
         
         // If conditionning
         $this->rules[] = new Rule(
@@ -120,9 +123,9 @@ class Template {
         $this->rules[] = new Rule(
         		'if_condition',
         		'~\{if:(\w+)([!<>=]+)(\w+)\}~',
-        		'<?php if (isset($this->data[\'$1\'])) {$base = $this->data[\'$1\'];}else{$base = \'$1\';};
-        		if (isset($this->data[\'$3\'])) {$value = $this->data[\'$3\'];}else{$value = \'$3\';}?>
-        		<?php if ($base $2 $value) : ?>'
+        		'<?php if (isset($this->data[\'$1\'])){$base = $this->data[\'$1\'];}else{$base = \'$1\';};
+        		if (isset($this->data[\'$3\'])){$value = $this->data[\'$3\'];}else{$value = \'$3\';}?>
+        		<?php if ($base $2 $value): ?>'
         );
         $this->rules[] = new Rule(
             'ifnot', 
@@ -193,7 +196,7 @@ class Template {
         $this->rules[] = new Rule(
         		'variable_array',
         		'~\{(\w+)\[(\w+)\]\}~',
-        		'<?php echo (isset($this->data[\'$1\'][\'$2\'])) ? $this->data[\'$1\'][\'$2\'] : "{$1[$2]}"; ?>'
+        		'<?php echo (isset($this->data[\'$1\'][\'$2\'])) ? $this->data[\'$1\'][\'$2\'] : "&#123;$1[$2]&#125"; ?>'
         );
         
         $this->rules[] = new Rule(
