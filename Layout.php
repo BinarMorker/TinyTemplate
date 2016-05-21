@@ -11,7 +11,7 @@ class Layout extends Template {
 	public function process(array $custom_rules, array $data) {
 		$custom_rules[] = new Rule(
 				'yield',
-				'~\{yield\}~',
+				'yield',
 				'<?php $end = end($this->data); echo $end; ?>'
 		);
 		

@@ -14,7 +14,7 @@ class Application {
         $time = microtime(true);
         Engine::instance()->add_rule(new Rule(
                 'translate', 
-                '~\{translate:(\w+),(\w+)\}~', 
+                'translate:(\w+),(\w+)', 
                 '<?php \\Application::translate(\'$1\', \'$2\'); ?>'));
         Engine::instance()->add_data(array(
             "working" => "&#10003;",
