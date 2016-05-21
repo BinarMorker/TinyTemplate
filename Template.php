@@ -117,34 +117,34 @@ class Template {
         // If conditionning
         $this->rules[] = new Rule(
             'if_boolean', 
-            '~\{if:(\w+)\}~', 
+            'if:(\w+)', 
             '<?php if (isset($this->data[\'$1\']) && $this->data[\'$1\']): ?>'
         );
         $this->rules[] = new Rule(
         		'if_condition',
-        		'~\{if:(\w+)([!<>=]+)(\w+)\}~',
+        		'if:(\w+)([!<>=]+)(\w+)',
         		'<?php if (isset($this->data[\'$1\'])){$base = $this->data[\'$1\'];}else{$base = \'$1\';};
         		if (isset($this->data[\'$3\'])){$value = $this->data[\'$3\'];}else{$value = \'$3\';}?>
         		<?php if ($base $2 $value): ?>'
         );
         $this->rules[] = new Rule(
             'ifnot', 
-            '~\{ifnot:(\w+)\}~', 
+            'ifnot:(\w+)', 
             '<?php if (!$this->data[\'$1\']): ?>'
         );
         $this->rules[] = new Rule(
             'else', 
-            '~\{else\}~', 
+            'else', 
             '<?php else: ?>'
         );
         $this->rules[] = new Rule(
             'elseif_boolean', 
-            '~\{else:(\w+)\}~', 
+            'else:(\w+)', 
             '<?php elseif (isset($this->data[\'$1\']) && $this->data[\'$1\']): ?>'
         );
         $this->rules[] = new Rule(
             'elseif_condition', 
-            '~\{else:(\w+)([!<>=]+)(\w+)\}~', 
+            'else:(\w+)([!<>=]+)(\w+)', 
             '<?php elseif (((isset($this->data[\'$1\']) && isset($this->data[\'$3\'])) && $this->data[\'$1\'] $2 $this->data[\'$3\']) ||
         		((isset($this->data[\'$1\']) && !isset($this->data[\'$3\'])) && $this->data[\'$1\'] $2 \'$3\') ||
         		((!isset($this->data[\'$1\']) && isset($this->data[\'$3\'])) && \'$1\' $2 $this->data[\'$3\']) ||
@@ -152,33 +152,33 @@ class Template {
         );
         $this->rules[] = new Rule(
             'endif', 
-            '~\{endif\}~', 
+            'endif', 
             '<?php endif; ?>'
         );
         
         // Loops
         $this->rules[] = new Rule(
             'loop', 
-            '~\{loop:(\w+)\}~', 
+            'loop:(\w+)', 
             '<?php foreach ($this->data[\'$1\'] as $element): $this->wrap($element); ?>'
         );
         $this->rules[] = new Rule(
             'endloop', 
-            '~\{endloop\}~', 
+            'endloop', 
             '<?php $this->unwrap(); endforeach; ?>'
         );
         
         // Importing
         $this->rules[] = new Rule(
             'import_view', 
-            '~\{import:(([^\/\s]+\/)?(.*))\}~', 
+            'import:(([^\/\s]+\/)?(.*))', 
             '<?php echo $this->importFile(\'$1\'); ?>'
         );
         
         // Clean variables
         $this->rules[] = new Rule(
             'escape_var', 
-            '~\{escape:(\w+)\}~', 
+            'escape:(\w+)', 
             '<?php $this->showVariable(\'$1\', true); ?>'
         );
         
@@ -188,20 +188,20 @@ class Template {
         // Variables
         $this->rules[] = new Rule(
             'variable', 
-            '~\{(\w+)\}~', 
+            '(\w+)', 
             '<?php $this->showVariable(\'$1\'); ?>'
         );
         
         // Arrays
         $this->rules[] = new Rule(
         		'variable_array',
-        		'~\{(\w+)\[(\w+)\]\}~',
+        		'(\w+)\[(\w+)\]',
         		'<?php echo (isset($this->data[\'$1\'][\'$2\'])) ? $this->data[\'$1\'][\'$2\'] : "&#123;$1[$2]&#125"; ?>'
         );
         
         $this->rules[] = new Rule(
         		'variable_array_escape',
-        		'~\{escape:(\w+)\[(\w+)\]\}~',
+        		'escape:(\w+)\[(\w+)\]',
         		'<?php echo htmlentities($this->showVariable(\'$1\')[\'$2\']); ?>'
         );
         
@@ -209,7 +209,7 @@ class Template {
         $this->stack = array();
         
         foreach ($this->rules as $rule) {
-            $this->template = preg_replace($rule->rule(), $rule->replacement(), $this->template);
+            $this->template = preg_replace('/\{' . $rule->rule() . '\}/', $rule->replacement(), $this->template);
         }
         
         $this->template = '?>' . $this->template;
