@@ -130,7 +130,7 @@ class Template {
         $this->rules[] = new Rule(
             'ifnot', 
             'ifnot:(\w+)', 
-            '<?php if (!$this->data[\'$1\']): ?>'
+            '<?php if (!isset($this->data[\'$1\']) || !$this->data[\'$1\']): ?>'
         );
         $this->rules[] = new Rule(
             'else', 
